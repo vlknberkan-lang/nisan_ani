@@ -25,7 +25,9 @@ jobs:
           node-version: 20
           cache: npm
 
-      - run: npm ci
+      # npm install (npm ci değil): lock Windows'ta üretildiği için
+      # Linux'a özel optional native paketleri (ör. @emnapi) burada çözülür.
+      - run: npm install --no-audit --no-fund
 
       - name: Build (static export)
         env:
