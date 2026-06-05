@@ -1,77 +1,115 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { QRCodeCanvas } from "qrcode.react";
 import { eventConfig } from "@/lib/config";
+import { makeTheme } from "@/components/memory/theme";
 
 export default function QRPage() {
+  const theme = makeTheme(eventConfig.tone, eventConfig.accent);
   const [origin, setOrigin] = useState("");
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Yayınlandığında NEXT_PUBLIC_SITE_URL, yoksa tarayıcının adresi kullanılır.
     setOrigin(process.env.NEXT_PUBLIC_SITE_URL || window.location.origin);
   }, []);
 
-  const targetUrl = origin ? `${origin}/birak` : "";
+  // QR doğrudan anı duvarı ana sayfasını gösterir
+  const targetUrl = origin || "";
 
   function downloadQR() {
     const canvas = wrapRef.current?.querySelector("canvas");
     if (!canvas) return;
     const link = document.createElement("a");
-    link.download = "nisan-qr.png";
+    link.download = "nisan-anı-qr.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-12">
-      <div className="animate-fade-up w-full max-w-md text-center">
-        <Link href="/" className="font-sans text-sm text-accent hover:underline">
-          ← Ana sayfa
-        </Link>
-
-        <h1 className="mt-3 font-serif text-4xl text-foreground">
-          {eventConfig.person1} &amp; {eventConfig.person2}
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: theme.bg,
+        color: theme.ink,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+        fontFamily: theme.fontSerif,
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 420, textAlign: "center" }}>
+        <p
+          style={{
+            fontSize: 13,
+            letterSpacing: "0.42em",
+            textTransform: "uppercase",
+            color: theme.accent,
+            marginBottom: 14,
+          }}
+        >
+          Anı Duvarı
+        </p>
+        <h1 style={{ fontFamily: theme.fontScript, fontSize: 56, lineHeight: 1.05 }}>
+          {eventConfig.names}
         </h1>
-        <p className="mt-2 font-sans text-foreground/60">
-          Bu kodu okutarak bize bir anı bırakabilirsin ♥
+        <p style={{ fontSize: 18, color: theme.muted, margin: "10px 0 24px" }}>
+          Bu kodu okutarak bize bir anı bırak ♥
         </p>
 
         <div
           ref={wrapRef}
-          className="mx-auto mt-8 inline-block rounded-3xl border border-accent/20 bg-white p-6 shadow-lg"
+          style={{
+            display: "inline-block",
+            background: "#fff",
+            padding: 22,
+            borderRadius: 24,
+            boxShadow: "0 16px 40px rgba(0,0,0,0.12)",
+          }}
         >
           {targetUrl ? (
             <QRCodeCanvas
               value={targetUrl}
-              size={256}
+              size={260}
               level="H"
-              fgColor="#b76e79"
+              fgColor={theme.accent}
               bgColor="#ffffff"
               marginSize={2}
             />
           ) : (
-            <div className="h-64 w-64 animate-pulse rounded-xl bg-accent/10" />
+            <div style={{ width: 260, height: 260 }} />
           )}
         </div>
 
-        <p className="mt-4 break-all font-sans text-xs text-foreground/40">
+        <p style={{ fontSize: 12, color: theme.muted, marginTop: 12, wordBreak: "break-all" }}>
           {targetUrl}
         </p>
 
         <button
           onClick={downloadQR}
-          className="mt-6 rounded-full bg-accent px-8 py-3 font-sans font-semibold text-white shadow-lg shadow-accent/30 transition hover:bg-accent/90"
+          style={{
+            marginTop: 22,
+            padding: "14px 30px",
+            background: theme.accent,
+            color: "#fff",
+            border: "none",
+            borderRadius: 999,
+            fontFamily: theme.fontSerif,
+            fontSize: 17,
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            cursor: "pointer",
+            boxShadow: `0 12px 28px ${theme.accent}44`,
+          }}
         >
           QR Kodunu İndir
         </button>
 
-        <p className="mt-4 font-sans text-xs text-foreground/40">
-          İpucu: Bu kodu masalara koyabilir ya da davetiyeye ekleyebilirsiniz.
+        <p style={{ fontSize: 13, color: theme.muted, marginTop: 16 }}>
+          Masalara koyabilir ya da davetiyeye ekleyebilirsiniz.
         </p>
       </div>
-    </main>
+    </div>
   );
 }

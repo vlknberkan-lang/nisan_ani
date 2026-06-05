@@ -1,33 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdf6f3;
-  --foreground: #4a2f33;
-  --accent: #b76e79;
-  --accent-soft: #e8c4cb;
+  --background: #1a1611;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --font-serif: var(--font-playfair);
-  --font-sans: var(--font-quicksand);
+html,
+body {
+  background: #1a1611;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 body {
-  background: radial-gradient(ellipse at top, #ffffff 0%, var(--background) 55%);
-  background-attachment: fixed;
-  color: var(--foreground);
-  font-family: var(--font-quicksand), system-ui, sans-serif;
+  margin: 0;
 }
 
-/* Yumuşak giriş animasyonu */
-@keyframes fadeUp {
+::placeholder {
+  color: rgba(58, 36, 24, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ── Anı Duvarı animasyonları ─────────────────────────────── */
+@keyframes mw-fall {
+  0% {
+    transform: translateY(-30px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(880px) rotate(300deg);
+  }
+}
+@keyframes mw-sway {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: 26px;
+  }
+}
+@keyframes mw-pop {
+  0% {
+    transform: translateY(0) scale(0.4);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(560px) scale(1) rotate(140deg);
+    opacity: 0;
+  }
+}
+@keyframes mw-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(168, 117, 90, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(168, 117, 90, 0);
+  }
+}
+@keyframes mw-fade {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -35,6 +75,24 @@ body {
   }
 }
 
-.animate-fade-up {
-  animation: fadeUp 0.8s ease both;
+.mw-screen {
+  height: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mw-screen {
+    animation: mw-fade 0.38s ease;
+  }
+}
+
+audio {
+  filter: sepia(0.18) saturate(1.1);
+}
+
+/* Geniş ekranlarda telefon çerçevesini ortala ve köşeleri yuvarla */
+@media (min-width: 480px) {
+  .mw-frame {
+    min-height: auto !important;
+    height: calc(100dvh - 48px);
+    border-radius: 18px;
+  }
 }

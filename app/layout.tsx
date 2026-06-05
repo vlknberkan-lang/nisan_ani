@@ -1,23 +1,35 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Quicksand } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  DM_Serif_Display,
+  Allura,
+} from "next/font/google";
 import "./globals.css";
 import { eventConfig } from "@/lib/config";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
 });
 
-const quicksand = Quicksand({
-  variable: "--font-quicksand",
+const dmSerif = DM_Serif_Display({
+  variable: "--font-dm-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+});
+
+const allura = Allura({
+  variable: "--font-allura",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
-  title: `${eventConfig.person1} & ${eventConfig.person2} — Nişan Anı Defteri`,
-  description: eventConfig.tagline,
+  title: `${eventConfig.names} · Anı Duvarı`,
+  description: eventConfig.headline,
 };
 
 export default function RootLayout({
@@ -28,9 +40,9 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${playfair.variable} ${quicksand.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${dmSerif.variable} ${allura.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
