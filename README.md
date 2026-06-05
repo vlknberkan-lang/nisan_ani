@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💍 Nişan Anı Defteri
 
-## Getting Started
+Misafirlerin QR kod okutarak **fotoğraf, ses kaydı, video veya yazılı not**
+bırakabildiği dijital anı defteri. Next.js + Tailwind + Supabase ile yapıldı.
 
-First, run the development server:
+## Sayfalar
+
+| Adres      | Açıklama                                          |
+| ---------- | ------------------------------------------------- |
+| `/`        | Davetiye / ana sayfa                              |
+| `/birak`   | Misafirin anı bıraktığı sayfa (foto/ses/video/not)|
+| `/anilar`  | Bırakılan tüm anıların galerisi                   |
+| `/qr`      | Masalara/davetiyeye koyabileceğin QR kodu         |
+
+---
+
+## Kurulum (3 adım)
+
+### 1) Supabase veritabanını hazırla
+
+1. [supabase.com](https://supabase.com) → projeni aç.
+2. Sol menü → **SQL Editor** → **New query**.
+3. `supabase/schema.sql` dosyasının içeriğini yapıştır → **RUN**.
+   (Bu; `memories` tablosunu, `anilar` storage bucket'ını ve izinleri oluşturur.)
+
+### 2) Ortam değişkenlerini gir
+
+`.env.local` dosyasını aç ve Supabase bilgilerini doldur
+(**Project Settings → API**):
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+### 3) Çalıştır
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) adresini aç.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Kişiselleştirme
 
-## Learn More
+İsimler, tarih, mekan ve metinler tek dosyada:
+**`lib/config.ts`** — buradan düzenle.
 
-To learn more about Next.js, take a look at the following resources:
+## Yayınlama (Vercel)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Projeyi GitHub'a yükle.
+2. [vercel.com](https://vercel.com) → **Import Project** → repo'yu seç.
+3. **Environment Variables** kısmına `.env.local`'daki 3 değişkeni ekle.
+   - `NEXT_PUBLIC_SITE_URL`'i canlı adresinle güncelle (örn: `https://nisanimiz.vercel.app`).
+4. Deploy → bitince `/qr` sayfasından QR kodunu indir ve paylaş. ♥
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Moderasyon
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+İstenmeyen bir anıyı gizlemek için Supabase → Table Editor → `memories`
+tablosunda ilgili satırın `approved` değerini `false` yap.

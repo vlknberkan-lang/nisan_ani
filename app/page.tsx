@@ -1,65 +1,61 @@
-import Image from "next/image";
+import Link from "next/link";
+import { eventConfig } from "@/lib/config";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="flex flex-1 items-center justify-center px-6 py-16">
+      <div className="animate-fade-up w-full max-w-xl text-center">
+        {/* Üst süs */}
+        <p className="font-sans text-sm uppercase tracking-[0.35em] text-accent">
+          {eventConfig.tagline}
+        </p>
+
+        <div className="my-6 flex items-center justify-center gap-4 text-accent/60">
+          <span className="h-px w-16 bg-accent/40" />
+          <span className="text-2xl">♥</span>
+          <span className="h-px w-16 bg-accent/40" />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* İsimler */}
+        <h1 className="font-serif text-5xl leading-tight text-foreground sm:text-6xl">
+          {eventConfig.person1}
+          <span className="mx-3 text-accent">&amp;</span>
+          {eventConfig.person2}
+        </h1>
+
+        {/* Tarih / yer */}
+        <div className="mt-8 space-y-1 font-sans text-foreground/80">
+          <p className="text-lg font-medium">{eventConfig.dateLabel}</p>
+          <p>{eventConfig.timeLabel}</p>
+          <p className="text-accent">{eventConfig.venue}</p>
+          <p className="text-sm text-foreground/60">{eventConfig.venueAddress}</p>
         </div>
-      </main>
-    </div>
+
+        {/* Açıklama */}
+        <p className="mx-auto mt-10 max-w-md font-sans text-foreground/70">
+          {eventConfig.memoryIntro}
+        </p>
+
+        {/* Butonlar */}
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            href="/birak"
+            className="w-full rounded-full bg-accent px-8 py-3.5 font-sans font-semibold text-white shadow-lg shadow-accent/30 transition hover:scale-[1.03] hover:bg-accent/90 sm:w-auto"
+          >
+            Anı Bırak ♥
+          </Link>
+          <Link
+            href="/anilar"
+            className="w-full rounded-full border border-accent/40 px-8 py-3.5 font-sans font-semibold text-accent transition hover:bg-accent/10 sm:w-auto"
+          >
+            Anıları Gör
+          </Link>
+        </div>
+
+        <p className="mt-12 font-sans text-xs text-foreground/40">
+          Bıraktığınız her anı bizim için çok değerli — teşekkür ederiz. ♥
+        </p>
+      </div>
+    </main>
   );
 }
