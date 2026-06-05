@@ -337,23 +337,59 @@ export function Capture({
     setPreviewUrl(URL.createObjectURL(f));
   }
 
+  // Cihaza göre desteklenen ses formatını seç (iOS Safari webm desteklemez → mp4)
+  function pickAudioMime(): string {
+    const candidates = ["audio/webm", "audio/mp4", "audio/ogg", "audio/aac"];
+    const supported =
+      typeof MediaRecorder !== "undefined" &&
+      typeof MediaRecorder.isTypeSupported === "function";
+    if (!supported) return "";
+    return candidates.find((t) => MediaRecorder.isTypeSupported(t)) || "";
+  }
+
+  function extFor(mime: string): string {
+    if (mime.includes("webm")) return "webm";
+    if (mime.includes("mp4") || mime.includes("aac")) return "m4a";
+    if (mime.includes("ogg")) return "ogg";
+    return "webm";
+  }
+
   async function startRec() {
+    setError("");
     try {
+      if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+        setError(
+          "Bu tarayıcı ses kaydını desteklemiyor. Aşağıdan hazır bir ses dosyası yükleyebilirsin."
+        );
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const rec = new MediaRecorder(stream);
+      const mime = pickAudioMime();
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
       chunksRef.current = [];
       rec.ondataavailable = (ev) => ev.data.size && chunksRef.current.push(ev.data);
       rec.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        setFile(new File([blob], `ses-${Date.now()}.webm`, { type: "audio/webm" }));
+        const outMime = rec.mimeType || mime || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: outMime });
+        const ext = extFor(outMime);
+        setFile(new File([blob], `ses-${Date.now()}.${ext}`, { type: outMime }));
         setPreviewUrl(URL.createObjectURL(blob));
         stream.getTracks().forEach((t) => t.stop());
       };
       rec.start();
       recorderRef.current = rec;
       setRecording(true);
-    } catch {
-      setError("Mikrofona erişilemedi. Lütfen izin verin.");
+    } catch (e) {
+      const err = e as DOMException;
+      if (err?.name === "NotAllowedError" || err?.name === "SecurityError") {
+        setError("Mikrofon izni verilmedi. Tarayıcı ayarlarından izin verip tekrar dene.");
+      } else if (err?.name === "NotFoundError") {
+        setError("Mikrofon bulunamadı.");
+      } else {
+        setError(
+          "Ses kaydı başlatılamadı. Aşağıdan hazır bir ses dosyası yükleyebilirsin."
+        );
+      }
     }
   }
 
@@ -528,6 +564,29 @@ export function Capture({
             <p style={{ fontFamily: theme.fontSerif, fontSize: 15, color: theme.muted, marginTop: 12 }}>
               {recording ? "Kaydediliyor… bitince dokun" : file ? "" : "Kaydetmek için dokun"}
             </p>
+
+            {/* Kayıt çalışmazsa: hazır ses dosyası yükle */}
+            {!file && !recording && (
+              <label
+                style={{
+                  display: "inline-block",
+                  marginTop: 8,
+                  fontFamily: theme.fontSerif,
+                  fontSize: 15,
+                  color: theme.accent,
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+              >
+                ya da ses dosyası yükle
+                <input
+                  type="file"
+                  accept="audio/*"
+                  style={{ display: "none" }}
+                  onChange={pickFile}
+                />
+              </label>
+            )}
           </div>
         )}
 
